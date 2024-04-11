@@ -379,6 +379,7 @@ EditorMaterialPreviewPlugin::EditorMaterialPreviewPlugin() {
 	Vector<Vector3> vertices;
 	Vector<Vector3> normals;
 	Vector<Vector2> uvs;
+	Vector<Color> colors;
 	Vector<real_t> tangents;
 	Basis tt = Basis(Vector3(0, 1, 0), Math_PI * 0.5);
 
@@ -416,6 +417,7 @@ EditorMaterialPreviewPlugin::EditorMaterialPreviewPlugin() {
 		uv *= 4.0;                                                                             \
 		uv = uv * 0.5 + Vector2(0.5, 0.5);                                                     \
 		uvs.push_back(uv);                                                                     \
+		colors.push_back(Color(0.5, 0.5, 0.5));                                                \
 	}                                                                                          \
 	{                                                                                          \
 		Vector3 t = tt.xform(v[m_idx]);                                                        \
@@ -439,6 +441,7 @@ EditorMaterialPreviewPlugin::EditorMaterialPreviewPlugin() {
 	arr.resize(RS::ARRAY_MAX);
 	arr[RS::ARRAY_VERTEX] = vertices;
 	arr[RS::ARRAY_NORMAL] = normals;
+	arr[RS::ARRAY_COLOR] = colors;
 	arr[RS::ARRAY_TANGENT] = tangents;
 	arr[RS::ARRAY_TEX_UV] = uvs;
 	RS::get_singleton()->mesh_add_surface_from_arrays(sphere, RS::PRIMITIVE_TRIANGLES, arr);

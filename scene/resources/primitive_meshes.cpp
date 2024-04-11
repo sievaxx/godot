@@ -181,7 +181,7 @@ TypedArray<Array> PrimitiveMesh::surface_get_blend_shape_arrays(int p_surface) c
 BitField<Mesh::ArrayFormat> PrimitiveMesh::surface_get_format(int p_idx) const {
 	ERR_FAIL_INDEX_V(p_idx, 1, 0);
 
-	uint64_t mesh_format = RS::ARRAY_FORMAT_VERTEX | RS::ARRAY_FORMAT_NORMAL | RS::ARRAY_FORMAT_TANGENT | RS::ARRAY_FORMAT_TEX_UV | RS::ARRAY_FORMAT_INDEX;
+	uint64_t mesh_format = RS::ARRAY_FORMAT_VERTEX | RS::ARRAY_FORMAT_COLOR | RS::ARRAY_FORMAT_NORMAL | RS::ARRAY_FORMAT_TANGENT | RS::ARRAY_FORMAT_TEX_UV | RS::ARRAY_FORMAT_INDEX;
 	if (add_uv2) {
 		mesh_format |= RS::ARRAY_FORMAT_TEX_UV2;
 	}
@@ -389,6 +389,7 @@ void CapsuleMesh::create_mesh_array(Array &p_arr, const float radius, const floa
 
 	Vector<Vector3> points;
 	Vector<Vector3> normals;
+	Vector<Color> colors;
 	Vector<float> tangents;
 	Vector<Vector2> uvs;
 	Vector<Vector2> uv2s;
@@ -423,6 +424,7 @@ void CapsuleMesh::create_mesh_array(Array &p_arr, const float radius, const floa
 			normals.push_back(p.normalized());
 			ADD_TANGENT(-z, 0.0, -x, 1.0)
 			uvs.push_back(Vector2(u, v * onethird));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(u * radial_h, v * radial_v));
 			}
@@ -465,6 +467,7 @@ void CapsuleMesh::create_mesh_array(Array &p_arr, const float radius, const floa
 			normals.push_back(Vector3(x, 0.0, -z));
 			ADD_TANGENT(-z, 0.0, -x, 1.0)
 			uvs.push_back(Vector2(u, onethird + (v * onethird)));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(u * radial_h, radial_v + (v * height_v)));
 			}
@@ -508,6 +511,7 @@ void CapsuleMesh::create_mesh_array(Array &p_arr, const float radius, const floa
 			normals.push_back(p.normalized());
 			ADD_TANGENT(-z, 0.0, -x, 1.0)
 			uvs.push_back(Vector2(u, twothirds + ((v - 1.0) * onethird)));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(u * radial_h, radial_v + height_v + ((v - 1.0) * radial_v)));
 			}
@@ -530,6 +534,7 @@ void CapsuleMesh::create_mesh_array(Array &p_arr, const float radius, const floa
 
 	p_arr[RS::ARRAY_VERTEX] = points;
 	p_arr[RS::ARRAY_NORMAL] = normals;
+	p_arr[RS::ARRAY_COLOR] = colors;
 	p_arr[RS::ARRAY_TANGENT] = tangents;
 	p_arr[RS::ARRAY_TEX_UV] = uvs;
 	if (p_add_uv2) {
@@ -661,6 +666,7 @@ void BoxMesh::create_mesh_array(Array &p_arr, Vector3 size, int subdivide_w, int
 
 	Vector<Vector3> points;
 	Vector<Vector3> normals;
+	Vector<Color> colors;
 	Vector<float> tangents;
 	Vector<Vector2> uvs;
 	Vector<Vector2> uv2s;
@@ -693,6 +699,7 @@ void BoxMesh::create_mesh_array(Array &p_arr, Vector3 size, int subdivide_w, int
 			normals.push_back(Vector3(0.0, 0.0, 1.0));
 			ADD_TANGENT(1.0, 0.0, 0.0, 1.0);
 			uvs.push_back(Vector2(u, v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(u2 * width_h, v2 * height_v));
 			}
@@ -703,6 +710,7 @@ void BoxMesh::create_mesh_array(Array &p_arr, Vector3 size, int subdivide_w, int
 			normals.push_back(Vector3(0.0, 0.0, -1.0));
 			ADD_TANGENT(-1.0, 0.0, 0.0, 1.0);
 			uvs.push_back(Vector2(twothirds + u, v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(u2 * width_h, height_v + padding_v + (v2 * height_v)));
 			}
@@ -756,6 +764,7 @@ void BoxMesh::create_mesh_array(Array &p_arr, Vector3 size, int subdivide_w, int
 			normals.push_back(Vector3(1.0, 0.0, 0.0));
 			ADD_TANGENT(0.0, 0.0, -1.0, 1.0);
 			uvs.push_back(Vector2(onethird + u, v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(width_h + padding_h + (u2 * depth_h), v2 * height_v));
 			}
@@ -766,6 +775,7 @@ void BoxMesh::create_mesh_array(Array &p_arr, Vector3 size, int subdivide_w, int
 			normals.push_back(Vector3(-1.0, 0.0, 0.0));
 			ADD_TANGENT(0.0, 0.0, 1.0, 1.0);
 			uvs.push_back(Vector2(u, 0.5 + v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(width_h + padding_h + (u2 * depth_h), height_v + padding_v + (v2 * height_v)));
 			}
@@ -819,6 +829,7 @@ void BoxMesh::create_mesh_array(Array &p_arr, Vector3 size, int subdivide_w, int
 			normals.push_back(Vector3(0.0, 1.0, 0.0));
 			ADD_TANGENT(-1.0, 0.0, 0.0, 1.0);
 			uvs.push_back(Vector2(onethird + u, 0.5 + v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(u2 * width_h, ((height_v + padding_v) * 2.0) + (v2 * depth_v)));
 			}
@@ -829,6 +840,7 @@ void BoxMesh::create_mesh_array(Array &p_arr, Vector3 size, int subdivide_w, int
 			normals.push_back(Vector3(0.0, -1.0, 0.0));
 			ADD_TANGENT(1.0, 0.0, 0.0, 1.0);
 			uvs.push_back(Vector2(twothirds + u, 0.5 + v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(width_h + padding_h + (u2 * depth_h), ((height_v + padding_v) * 2.0) + (v2 * width_v)));
 			}
@@ -864,6 +876,7 @@ void BoxMesh::create_mesh_array(Array &p_arr, Vector3 size, int subdivide_w, int
 
 	p_arr[RS::ARRAY_VERTEX] = points;
 	p_arr[RS::ARRAY_NORMAL] = normals;
+	p_arr[RS::ARRAY_COLOR] = colors;
 	p_arr[RS::ARRAY_TANGENT] = tangents;
 	p_arr[RS::ARRAY_TEX_UV] = uvs;
 	if (p_add_uv2) {
@@ -981,6 +994,7 @@ void CylinderMesh::create_mesh_array(Array &p_arr, float top_radius, float botto
 
 	Vector<Vector3> points;
 	Vector<Vector3> normals;
+	Vector<Color> colors;
 	Vector<float> tangents;
 	Vector<Vector2> uvs;
 	Vector<Vector2> uv2s;
@@ -1018,6 +1032,7 @@ void CylinderMesh::create_mesh_array(Array &p_arr, float top_radius, float botto
 			normals.push_back(Vector3(x, side_normal_y, z).normalized());
 			ADD_TANGENT(z, 0.0, -x, 1.0)
 			uvs.push_back(Vector2(u, v * 0.5));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(center_h + (u - 0.5) * radius_h, v * height_v));
 			}
@@ -1053,6 +1068,7 @@ void CylinderMesh::create_mesh_array(Array &p_arr, float top_radius, float botto
 		normals.push_back(Vector3(0.0, 1.0, 0.0));
 		ADD_TANGENT(1.0, 0.0, 0.0, 1.0)
 		uvs.push_back(Vector2(0.25, 0.75));
+		colors.push_back(Color(0.5, 0.5, 0.5));
 		if (p_add_uv2) {
 			uv2s.push_back(Vector2(top_h, height_v + padding_v + MAX(top_v, bottom_v)));
 		}
@@ -1095,6 +1111,7 @@ void CylinderMesh::create_mesh_array(Array &p_arr, float top_radius, float botto
 		normals.push_back(Vector3(0.0, -1.0, 0.0));
 		ADD_TANGENT(1.0, 0.0, 0.0, 1.0)
 		uvs.push_back(Vector2(0.75, 0.75));
+		colors.push_back(Color(0.5, 0.5, 0.5));
 		if (p_add_uv2) {
 			uv2s.push_back(Vector2(top_h + top_h + padding_h + bottom_h, height_v + padding_v + MAX(top_v, bottom_v)));
 		}
@@ -1115,6 +1132,7 @@ void CylinderMesh::create_mesh_array(Array &p_arr, float top_radius, float botto
 			normals.push_back(Vector3(0.0, -1.0, 0.0));
 			ADD_TANGENT(1.0, 0.0, 0.0, 1.0)
 			uvs.push_back(Vector2(u, v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				uv2s.push_back(Vector2(top_h + top_h + padding_h + bottom_h + (x * bottom_h), height_v + padding_v + MAX(top_v, bottom_v) - (z * bottom_v)));
 			}
@@ -1130,6 +1148,7 @@ void CylinderMesh::create_mesh_array(Array &p_arr, float top_radius, float botto
 
 	p_arr[RS::ARRAY_VERTEX] = points;
 	p_arr[RS::ARRAY_NORMAL] = normals;
+	p_arr[RS::ARRAY_COLOR] = colors;
 	p_arr[RS::ARRAY_TANGENT] = tangents;
 	p_arr[RS::ARRAY_TEX_UV] = uvs;
 	if (p_add_uv2) {
@@ -1269,6 +1288,7 @@ void PlaneMesh::_create_mesh_array(Array &p_arr) const {
 
 	Vector<Vector3> points;
 	Vector<Vector3> normals;
+	Vector<Color> colors;
 	Vector<float> tangents;
 	Vector<Vector2> uvs;
 	Vector<int> indices;
@@ -1306,6 +1326,7 @@ void PlaneMesh::_create_mesh_array(Array &p_arr) const {
 				ADD_TANGENT(1.0, 0.0, 0.0, 1.0);
 			}
 			uvs.push_back(Vector2(1.0 - u, 1.0 - v)); /* 1.0 - uv to match orientation with Quad */
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			point++;
 
 			if (i > 0 && j > 0) {
@@ -1327,6 +1348,7 @@ void PlaneMesh::_create_mesh_array(Array &p_arr) const {
 
 	p_arr[RS::ARRAY_VERTEX] = points;
 	p_arr[RS::ARRAY_NORMAL] = normals;
+	p_arr[RS::ARRAY_COLOR] = colors;
 	p_arr[RS::ARRAY_TANGENT] = tangents;
 	p_arr[RS::ARRAY_TEX_UV] = uvs;
 	p_arr[RS::ARRAY_INDEX] = indices;
@@ -1459,6 +1481,7 @@ void PrismMesh::_create_mesh_array(Array &p_arr) const {
 
 	Vector<Vector3> points;
 	Vector<Vector3> normals;
+	Vector<Color> colors;
 	Vector<float> tangents;
 	Vector<Vector2> uvs;
 	Vector<Vector2> uv2s;
@@ -1499,6 +1522,7 @@ void PrismMesh::_create_mesh_array(Array &p_arr) const {
 			normals.push_back(Vector3(0.0, 0.0, 1.0));
 			ADD_TANGENT(1.0, 0.0, 0.0, 1.0);
 			uvs.push_back(Vector2(offset_front + u, v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (_add_uv2) {
 				uv2s.push_back(Vector2(u2 * scale * width_h, v2 * height_v));
 			}
@@ -1509,6 +1533,7 @@ void PrismMesh::_create_mesh_array(Array &p_arr) const {
 			normals.push_back(Vector3(0.0, 0.0, -1.0));
 			ADD_TANGENT(-1.0, 0.0, 0.0, 1.0);
 			uvs.push_back(Vector2(twothirds + offset_back + u, v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (_add_uv2) {
 				uv2s.push_back(Vector2(u2 * scale * width_h, height_v + padding_v + v2 * height_v));
 			}
@@ -1587,6 +1612,7 @@ void PrismMesh::_create_mesh_array(Array &p_arr) const {
 			normals.push_back(normal_right);
 			ADD_TANGENT(0.0, 0.0, -1.0, 1.0);
 			uvs.push_back(Vector2(onethird + u, v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (_add_uv2) {
 				uv2s.push_back(Vector2(width_h + padding_h + u2 * depth_h, v2 * height_v));
 			}
@@ -1597,6 +1623,7 @@ void PrismMesh::_create_mesh_array(Array &p_arr) const {
 			normals.push_back(normal_left);
 			ADD_TANGENT(0.0, 0.0, 1.0, 1.0);
 			uvs.push_back(Vector2(u, 0.5 + v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (_add_uv2) {
 				uv2s.push_back(Vector2(width_h + padding_h + u2 * depth_h, height_v + padding_v + v2 * height_v));
 			}
@@ -1650,6 +1677,7 @@ void PrismMesh::_create_mesh_array(Array &p_arr) const {
 			normals.push_back(Vector3(0.0, -1.0, 0.0));
 			ADD_TANGENT(1.0, 0.0, 0.0, 1.0);
 			uvs.push_back(Vector2(twothirds + u, 0.5 + v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (_add_uv2) {
 				uv2s.push_back(Vector2(u2 * width_h, 2.0 * (height_v + padding_v) + v2 * depth_v));
 			}
@@ -1675,6 +1703,7 @@ void PrismMesh::_create_mesh_array(Array &p_arr) const {
 
 	p_arr[RS::ARRAY_VERTEX] = points;
 	p_arr[RS::ARRAY_NORMAL] = normals;
+	p_arr[RS::ARRAY_COLOR] = colors;
 	p_arr[RS::ARRAY_TANGENT] = tangents;
 	p_arr[RS::ARRAY_TEX_UV] = uvs;
 	if (_add_uv2) {
@@ -1797,6 +1826,7 @@ void SphereMesh::create_mesh_array(Array &p_arr, float radius, float height, int
 
 	Vector<Vector3> points;
 	Vector<Vector3> normals;
+	Vector<Color> colors;
 	Vector<float> tangents;
 	Vector<Vector2> uvs;
 	Vector<Vector2> uv2s;
@@ -1837,6 +1867,7 @@ void SphereMesh::create_mesh_array(Array &p_arr, float radius, float height, int
 			}
 			ADD_TANGENT(z, 0.0, -x, 1.0)
 			uvs.push_back(Vector2(u, v));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (p_add_uv2) {
 				float w_h = w * 2.0 * center_h;
 				uv2s.push_back(Vector2(center_h + ((u - 0.5) * w_h), v * height_v));
@@ -1860,6 +1891,7 @@ void SphereMesh::create_mesh_array(Array &p_arr, float radius, float height, int
 
 	p_arr[RS::ARRAY_VERTEX] = points;
 	p_arr[RS::ARRAY_NORMAL] = normals;
+	p_arr[RS::ARRAY_COLOR] = colors;
 	p_arr[RS::ARRAY_TANGENT] = tangents;
 	p_arr[RS::ARRAY_TEX_UV] = uvs;
 	if (p_add_uv2) {
@@ -1973,6 +2005,7 @@ void TorusMesh::_create_mesh_array(Array &p_arr) const {
 
 	Vector<Vector3> points;
 	Vector<Vector3> normals;
+	Vector<Color> colors;
 	Vector<float> tangents;
 	Vector<Vector2> uvs;
 	Vector<Vector2> uv2s;
@@ -2029,6 +2062,7 @@ void TorusMesh::_create_mesh_array(Array &p_arr) const {
 			normals.push_back(Vector3(normali.x * normalj.x, normalj.y, normali.y * normalj.x));
 			ADD_TANGENT(-Math::cos(angi), 0.0, Math::sin(angi), 1.0);
 			uvs.push_back(Vector2(inci, incj));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			if (_add_uv2) {
 				uv2s.push_back(Vector2(offset_h + inci * adj_h, incj * height_v));
 			}
@@ -2047,6 +2081,7 @@ void TorusMesh::_create_mesh_array(Array &p_arr) const {
 
 	p_arr[RS::ARRAY_VERTEX] = points;
 	p_arr[RS::ARRAY_NORMAL] = normals;
+	p_arr[RS::ARRAY_COLOR] = colors;
 	p_arr[RS::ARRAY_TANGENT] = tangents;
 	p_arr[RS::ARRAY_TEX_UV] = uvs;
 	if (_add_uv2) {
@@ -2231,6 +2266,7 @@ void TubeTrailMesh::_create_mesh_array(Array &p_arr) const {
 
 	PackedVector3Array points;
 	PackedVector3Array normals;
+	PackedColorArray colors;
 	PackedFloat32Array tangents;
 	PackedVector2Array uvs;
 	PackedInt32Array bone_indices;
@@ -2277,6 +2313,7 @@ void TubeTrailMesh::_create_mesh_array(Array &p_arr) const {
 			normals.push_back(Vector3(x, 0, z));
 			ADD_TANGENT(z, 0.0, -x, 1.0)
 			uvs.push_back(Vector2(u, v * 0.5));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			point++;
 			{
 				bone_indices.push_back(bone);
@@ -2320,6 +2357,7 @@ void TubeTrailMesh::_create_mesh_array(Array &p_arr) const {
 			normals.push_back(Vector3(0.0, 1.0, 0.0));
 			ADD_TANGENT(1.0, 0.0, 0.0, 1.0)
 			uvs.push_back(Vector2(0.25, 0.75));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			point++;
 
 			bone_indices.push_back(0);
@@ -2349,6 +2387,7 @@ void TubeTrailMesh::_create_mesh_array(Array &p_arr) const {
 				normals.push_back(Vector3(0.0, 1.0, 0.0));
 				ADD_TANGENT(1.0, 0.0, 0.0, 1.0)
 				uvs.push_back(Vector2(u, v));
+				colors.push_back(Color(0.5, 0.5, 0.5));
 				point++;
 
 				bone_indices.push_back(0);
@@ -2385,6 +2424,7 @@ void TubeTrailMesh::_create_mesh_array(Array &p_arr) const {
 			normals.push_back(Vector3(0.0, -1.0, 0.0));
 			ADD_TANGENT(1.0, 0.0, 0.0, 1.0)
 			uvs.push_back(Vector2(0.75, 0.75));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 			point++;
 
 			bone_indices.push_back(sections);
@@ -2414,6 +2454,7 @@ void TubeTrailMesh::_create_mesh_array(Array &p_arr) const {
 				normals.push_back(Vector3(0.0, -1.0, 0.0));
 				ADD_TANGENT(1.0, 0.0, 0.0, 1.0)
 				uvs.push_back(Vector2(u, v));
+				colors.push_back(Color(0.5, 0.5, 0.5));
 				point++;
 
 				bone_indices.push_back(sections);
@@ -2437,6 +2478,7 @@ void TubeTrailMesh::_create_mesh_array(Array &p_arr) const {
 
 	p_arr[RS::ARRAY_VERTEX] = points;
 	p_arr[RS::ARRAY_NORMAL] = normals;
+	p_arr[RS::ARRAY_COLOR] = colors;
 	p_arr[RS::ARRAY_TANGENT] = tangents;
 	p_arr[RS::ARRAY_TEX_UV] = uvs;
 	p_arr[RS::ARRAY_BONES] = bone_indices;
@@ -2570,6 +2612,7 @@ void RibbonTrailMesh::_create_mesh_array(Array &p_arr) const {
 
 	PackedVector3Array points;
 	PackedVector3Array normals;
+	PackedColorArray colors;
 	PackedFloat32Array tangents;
 	PackedVector2Array uvs;
 	PackedInt32Array bone_indices;
@@ -2620,6 +2663,13 @@ void RibbonTrailMesh::_create_mesh_array(Array &p_arr) const {
 		if (shape == SHAPE_CROSS) {
 			uvs.push_back(Vector2(0, v));
 			uvs.push_back(Vector2(1, v));
+		}
+
+		colors.push_back(Color(0.5, 0.5, 0.5));
+		colors.push_back(Color(0.5, 0.5, 0.5));
+		if (shape == SHAPE_CROSS) {
+			colors.push_back(Color(0.5, 0.5, 0.5));
+			colors.push_back(Color(0.5, 0.5, 0.5));
 		}
 
 		ADD_TANGENT(0.0, 1.0, 0.0, 1.0)
@@ -2674,6 +2724,7 @@ void RibbonTrailMesh::_create_mesh_array(Array &p_arr) const {
 
 	p_arr[RS::ARRAY_VERTEX] = points;
 	p_arr[RS::ARRAY_NORMAL] = normals;
+	p_arr[RS::ARRAY_COLOR] = colors;
 	p_arr[RS::ARRAY_TANGENT] = tangents;
 	p_arr[RS::ARRAY_TEX_UV] = uvs;
 	p_arr[RS::ARRAY_BONES] = bone_indices;
@@ -3006,6 +3057,7 @@ void TextMesh::_create_mesh_array(Array &p_arr) const {
 
 	Vector<Vector3> vertices;
 	Vector<Vector3> normals;
+	Vector<Color> colors;
 	Vector<float> tangents;
 	Vector<Vector2> uvs;
 	Vector<int32_t> indices;
@@ -3081,6 +3133,7 @@ void TextMesh::_create_mesh_array(Array &p_arr) const {
 	vertices.resize(p_size);
 	normals.resize(p_size);
 	uvs.resize(p_size);
+	colors.resize(p_size);
 	tangents.resize(p_size * 4);
 	indices.resize(i_size);
 
@@ -3088,6 +3141,7 @@ void TextMesh::_create_mesh_array(Array &p_arr) const {
 	Vector3 *normals_ptr = normals.ptrw();
 	float *tangents_ptr = tangents.ptrw();
 	Vector2 *uvs_ptr = uvs.ptrw();
+	Color *colors_ptr = colors.ptrw();
 	int32_t *indices_ptr = indices.ptrw();
 
 	// Generate mesh.
@@ -3139,6 +3193,7 @@ void TextMesh::_create_mesh_array(Array &p_arr) const {
 							Vector3 point = Vector3(ts_ptr[k + l].x + offset.x + gl_of.x, -ts_ptr[k + l].y + offset.y - gl_of.y, depth / 2.0);
 							vertices_ptr[p_idx] = point;
 							normals_ptr[p_idx] = Vector3(0.0, 0.0, 1.0);
+							colors_ptr[p_idx] = Color(0.5, 0.5, 0.5);
 							if (has_depth) {
 								uvs_ptr[p_idx] = Vector2(Math::remap(point.x, min_p.x, max_p.x, real_t(0.0), real_t(1.0)), Math::remap(point.y, -max_p.y, -min_p.y, real_t(0.4), real_t(0.0)));
 							} else {
@@ -3157,6 +3212,7 @@ void TextMesh::_create_mesh_array(Array &p_arr) const {
 								Vector3 point = Vector3(ts_ptr[k + l].x + offset.x + gl_of.x, -ts_ptr[k + l].y + offset.y - gl_of.y, -depth / 2.0);
 								vertices_ptr[p_idx] = point;
 								normals_ptr[p_idx] = Vector3(0.0, 0.0, -1.0);
+								colors_ptr[p_idx] = Color(0.5, 0.5, 0.5);
 								uvs_ptr[p_idx] = Vector2(Math::remap(point.x, min_p.x, max_p.x, real_t(0.0), real_t(1.0)), Math::remap(point.y, -max_p.y, -min_p.y, real_t(0.8), real_t(0.4)));
 								tangents_ptr[p_idx * 4 + 0] = -1.0;
 								tangents_ptr[p_idx * 4 + 1] = 0.0;
@@ -3197,6 +3253,7 @@ void TextMesh::_create_mesh_array(Array &p_arr) const {
 									real_t u_pos = ((m % 2) == 0) ? length : length + seg_len;
 									vertices_ptr[p_idx + m] = quad_faces[m];
 									normals_ptr[p_idx + m] = Vector3(d.y, d.x, 0.0);
+									colors_ptr[p_idx] = Color(0.5, 0.5, 0.5);
 									if (m < 2) {
 										uvs_ptr[p_idx + m] = Vector2(Math::remap(u_pos, 0, ps_info.length, real_t(0.0), real_t(1.0)), (ps_info.ccw) ? 0.8 : 0.9);
 									} else {
@@ -3236,6 +3293,7 @@ void TextMesh::_create_mesh_array(Array &p_arr) const {
 					for (int k = 0; k < 4; k++) {
 						vertices_ptr[p_idx + k] = quad_faces[k];
 						normals_ptr[p_idx + k] = Vector3(0.0, 0.0, 1.0);
+						colors_ptr[p_idx + k] = Color(0.5, 0.5, 0.5);
 						if (has_depth) {
 							uvs_ptr[p_idx + k] = Vector2(Math::remap(quad_faces[k].x, min_p.x, max_p.x, real_t(0.0), real_t(1.0)), Math::remap(quad_faces[k].y, -max_p.y, -min_p.y, real_t(0.4), real_t(0.0)));
 						} else {
@@ -3268,6 +3326,7 @@ void TextMesh::_create_mesh_array(Array &p_arr) const {
 		vertices.push_back(Vector3());
 		normals.push_back(Vector3());
 		uvs.push_back(Vector2());
+		colors.push_back(Color(0.5, 0.5, 0.5));
 		tangents.push_back(1.0);
 		tangents.push_back(0.0);
 		tangents.push_back(0.0);
@@ -3279,6 +3338,7 @@ void TextMesh::_create_mesh_array(Array &p_arr) const {
 
 	p_arr[RS::ARRAY_VERTEX] = vertices;
 	p_arr[RS::ARRAY_NORMAL] = normals;
+	p_arr[RS::ARRAY_COLOR] = colors;
 	p_arr[RS::ARRAY_TANGENT] = tangents;
 	p_arr[RS::ARRAY_TEX_UV] = uvs;
 	p_arr[RS::ARRAY_INDEX] = indices;
